@@ -26,13 +26,19 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://hafizubaid-todo-wep-app.hf.space",  # Frontend URL
+        "https://hafizubaid-todo-wep-app.hf.space",  # Deployed frontend
         "http://localhost:3000",  # Local frontend
+        "http://localhost:8001",  # Local backend
         "http://localhost:7860",  # Backend self
+        "http://127.0.0.1:3000",  # Alternative local frontend
+        "http://127.0.0.1:3001",  # Alternative local frontend
+        "https://*.hf.space",  # Allow all Hugging Face spaces
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    # Allow credentials to be included in cross-origin requests
+    allow_origin_regex=r"https://.*\.hf\.space",
 )
 
 # Include API routers

@@ -1,18 +1,18 @@
 import axios from 'axios';
 import { Task, TaskCreate, TaskUpdate } from '../types/task';
 
-// ✅ IMPORTANT: Port 7860 use karein for production
+// ✅ IMPORTANT: Use correct URL for production (Hugging Face Space)
 const getApiBaseUrl = () => {
   // Environment variable se lelo
   if (process.env.NEXT_PUBLIC_API_BASE_URL) {
     return process.env.NEXT_PUBLIC_API_BASE_URL;
   }
-  
-  // Production mein port 7860
+
+  // Production mein Hugging Face Space URL (no port needed)
   if (process.env.NODE_ENV === 'production') {
-    return 'https://hafizubaid-todo-wep-app.hf.space:7860';
+    return 'https://hafizubaid-todo-wep-app.hf.space';
   }
-  
+
   // Development mein port 8001
   return 'http://localhost:8001';
 };
@@ -131,6 +131,7 @@ export const {
 
 // ✅ For backward compatibility
 export const toggleTaskComplete = taskAPI.toggleTaskCompletion;
+
 
 // ✅ Export api instance for custom requests
 export default api;

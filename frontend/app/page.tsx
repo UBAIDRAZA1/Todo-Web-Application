@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
-import { auth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth';
 import { TaskList } from '@/components/TaskList';
 import { TaskForm } from '@/components/TaskForm';
 import { TaskFilters } from '@/components/TaskFilters';
@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card';
 
 export default function Dashboard() {
   const router = useRouter();
-  const session = auth.useSession();
+  const { session, signOut } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -164,9 +164,7 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     try {
-      await auth.signOut();
-      router.push('/auth/login');
-      router.refresh();
+      await signOut();
     } catch (err) {
       console.error('Logout error:', err);
     }
@@ -194,7 +192,7 @@ export default function Dashboard() {
   const filteredTasks = tasks.filter((task) => {
     // First filter by completion status
     let matchesFilter = true;
-    
+
     if (filter === 'pending') {
       matchesFilter = !task.completed; // Show only incomplete tasks
     } else if (filter === 'completed') {
@@ -274,9 +272,9 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <h3 className="text-lg font-semibold mb-2">
-                    {searchTerm 
-                      ? 'No tasks match your search' 
-                      : filter === 'completed' 
+                    {searchTerm
+                      ? 'No tasks match your search'
+                      : filter === 'completed'
                         ? 'No completed tasks yet'
                         : filter === 'pending'
                           ? 'No pending tasks'

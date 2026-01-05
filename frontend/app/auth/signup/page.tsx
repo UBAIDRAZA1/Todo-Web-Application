@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { auth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 
 export default function SignupPage() {
+  const { signUp } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -29,7 +30,7 @@ export default function SignupPage() {
     }
 
     try {
-      const response = await auth.signUp.email({
+      const response = await signUp({
         email,
         password,
         name,
@@ -67,7 +68,7 @@ export default function SignupPage() {
               Start your journey with us today
             </p>
           </div>
-          
+
           {error && (
             <div className="bg-destructive/10 border-l-4 border-destructive p-4 rounded-md animate-shake">
               <div className="flex">
