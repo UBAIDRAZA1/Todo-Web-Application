@@ -8,9 +8,10 @@ import { getTasks, createTask, updateTask, deleteTask, toggleTaskComplete } from
 
 interface TaskDashboardProps {
   userId: string;
+  token: string | null;
 }
 
-export default function TaskDashboard({ userId }: TaskDashboardProps) {
+export default function TaskDashboard({ userId, token }: TaskDashboardProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -24,7 +25,7 @@ export default function TaskDashboard({ userId }: TaskDashboardProps) {
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const data = await getTasks(userId);
+      const data = await getTasks(userId, token);
       setTasks(data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -35,7 +36,7 @@ export default function TaskDashboard({ userId }: TaskDashboardProps) {
 
   const handleCreateTask = async (taskData: { title: string; description?: string }) => {
     try {
-      const newTask = await createTask(userId, { ...taskData, completed: false });
+      const newTask = await createTask(userId, { ...taskData, completed: false }, token);
       // Ensure the new task has a valid ID before adding to state
       if (newTask && newTask.id) {
         setTasks([...tasks, newTask]);
@@ -54,7 +55,7 @@ export default function TaskDashboard({ userId }: TaskDashboardProps) {
       return;
     }
     try {
-      const updatedTask = await updateTask(userId, taskId, taskData);
+      const updatedTask = await updateTask(userId, taskId, taskData, token);
       // Use the original task ID if the response doesn't have one (for backend compatibility)
       const taskWithId = updatedTask.id ? updatedTask : { ...updatedTask, id: taskId };
       setTasks(tasks.map(task => task.id === taskId ? taskWithId : task));
@@ -70,7 +71,7 @@ export default function TaskDashboard({ userId }: TaskDashboardProps) {
       return;
     }
     try {
-      await deleteTask(userId, taskId);
+      await deleteTask(userId, taskId, token);
       setTasks(tasks.filter(task => task.id !== taskId));
     } catch (error) {
       console.error('Error deleting task:', error);
@@ -83,7 +84,7 @@ export default function TaskDashboard({ userId }: TaskDashboardProps) {
       return;
     }
     try {
-      const updatedTask = await toggleTaskComplete(userId, taskId, completed);
+      const updatedTask = await toggleTaskComplete(userId, taskId, completed, token);
       // Use the original task ID if the response doesn't have one (for backend compatibility)
       const taskWithId = updatedTask.id ? updatedTask : { ...updatedTask, id: taskId };
       setTasks(tasks.map(task => task.id === taskId ? taskWithId : task));

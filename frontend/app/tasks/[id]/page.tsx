@@ -39,6 +39,7 @@ export default function TaskDetailPage() {
       const taskData = await taskAPI.getTask(
         session.data.user.id,
         parseInt(id as string),
+        session.data.token,
       );
       setTask(taskData);
       setError(null);
@@ -61,6 +62,7 @@ export default function TaskDetailPage() {
         session.data.user.id,
         task.id,
         data,
+        session.data.token,
       );
       setTask(updatedTask);
       setIsEditing(false);
@@ -75,7 +77,7 @@ export default function TaskDetailPage() {
 
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
-        await taskAPI.deleteTask(session.data.user.id, task.id);
+        await taskAPI.deleteTask(session.data.user.id, task.id, session.data.token);
         router.push("/");
       } catch (err) {
         setError("Failed to delete task");
@@ -92,6 +94,7 @@ export default function TaskDetailPage() {
         session.data.user.id,
         task.id,
         !task.completed,
+        session.data.token,
       );
       setTask(updatedTask);
     } catch (err) {
